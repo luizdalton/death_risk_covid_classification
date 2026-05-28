@@ -1,0 +1,108 @@
+# ==========================================
+# Ambientes Virtuais (Virtual Environments)
+# ==========================================
+.venv/
+venv/
+ENV/
+env/
+ENV2/
+pythonenv*/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ==========================================
+# Caches e Ficheiros Temporários do Python
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.mo
+*.pot
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# ==========================================
+# Configurações de IDEs (VS Code, PyCharm, etc)
+# ==========================================
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+# ==========================================
+# Bases de Dados e Variáveis de Ambiente
+# ==========================================
+.env
+.venv
+env.txt
+secrets.json
+*.db
+*.sqlite3
+
+# ==========================================
+# Ciência de Dados e Notebooks (Jupyter)
+# ==========================================
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+# Nota: Descomenta a linha abaixo se NÃO quiseres enviar os notebooks (.ipynb) para o Git
+# *.ipynb
+
+# ==========================================
+# Sistema Operativo (OS)
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ==========================================
+# Logs e Ficheiros Temporários do Flask/Web
+# ==========================================
+*.log
+instance/
+.webassets-cache
+
+# ==========================================
+# IMPORTANTE: Dados e Modelos Pesados
+# ==========================================
+# É uma boa prática não enviar dados massivos ou modelos treinados para o Git.
+# Se quiseres ignorar os teus modelos .pkl e tabelas automaticamente, descomenta as linhas abaixo:
+# *.pkl
+# *.csv
+# *.xlsx
+# *.xls
