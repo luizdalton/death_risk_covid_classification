@@ -2,13 +2,17 @@ from flask import Flask, request, render_template_string, Response
 import pickle
 import numpy as np
 import pandas as pd
-import io
+import io, os
 
 # Criar app
 app = Flask(__name__)
 
+# Diretórios
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', 'best_knn_model.pkl'))
+
 # Carregamento do Modelo
-with open('./best_rf_model.pkl', 'rb') as f:
+with open(MODEL_PATH, 'rb') as f:
     modelo = pickle.load(f)
 
 scaler = None  # Ative seu scaler aqui se necessário
