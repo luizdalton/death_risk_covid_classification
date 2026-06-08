@@ -1,4 +1,8 @@
 # Death Risk COVID Classification
+<img width="715" height="456" alt="image" src="https://github.com/user-attachments/assets/b84df18c-3ad8-46a7-a893-f9a12bec5b13" />
+
+
+<img width="1600" height="708" alt="image" src="https://github.com/user-attachments/assets/571c9975-cbfe-409c-9013-551b74afa6da" />
 
 Este projeto é uma aplicação Flask para classificar o risco de óbito em pacientes com COVID-19 a partir de arquivos em lote (CSV ou Excel).
 
