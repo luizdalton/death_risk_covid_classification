@@ -8,8 +8,9 @@ import io, os
 app = Flask(__name__)
 
 # Diretórios
+MODEL = "best_rf_model.pkl"  # Substitua pelo nome do seu modelo
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', 'best_knn_model.pkl'))
+MODEL_PATH = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', MODEL))
 
 # Carregamento do Modelo
 with open(MODEL_PATH, 'rb') as f:
