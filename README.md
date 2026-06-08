@@ -6,7 +6,7 @@ Este projeto é uma aplicação Flask para classificar o risco de óbito em paci
 
 - `main.py` - Script de entrada que executa `app/app.py` usando `subprocess`.
 - `app/app.py` - Aplicação Flask principal que carrega o modelo, processa uploads e retorna resultados.
-- `models/best_rf_model.pkl` - Modelo treinado em formato pickle utilizado para predição.
+- `models/best_knn_model.pkl` - Modelo treinado em formato pickle (KNN) utilizado para predição.
 - `requirements.txt` - Dependências Python necessárias para rodar a aplicação.
 - `utils/clean_ambient.py` - Script auxiliar para identificar e remover dependências não utilizadas.
 
@@ -90,7 +90,7 @@ Você pode exportar os resultados para um arquivo Excel clicando em "Exportar pa
 
 ## Observações
 
-- O modelo é carregado a partir de `models/best_rf_model.pkl`.
+- O modelo é carregado a partir de `models/best_knn_model.pkl`.
 - Se o arquivo enviado não contiver todas as colunas necessárias, a aplicação retornará um erro indicando as colunas faltantes.
 - O código atual não aplica normalização automaticamente porque `scaler` está definido como `None`. Se o modelo exigir pré-processamento, ative o scaler no `app/app.py`.
 
