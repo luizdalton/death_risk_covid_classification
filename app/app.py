@@ -1,15 +1,24 @@
-from flask import Flask, request, render_template_string, Response
+from flask import Flask, request, render_template, Response, redirect
 import pickle
 import numpy as np
 import pandas as pd
 import io, os
-
-# Criar app
-app = Flask(__name__)
+from dashboard import (
+    gerar_metricas,
+    grafico_classificacao,
+    grafico_comorbidades,
+    grafico_sintomas
+)
 
 # Diretórios
 MODEL = "best_rf_model.pkl"  # Substitua pelo nome do seu modelo
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "..", "templates"),
+    static_folder=os.path.join(BASE_DIR, "..", "static")
+)
 MODEL_PATH = os.path.normpath(os.path.join(BASE_DIR, '..', 'models', MODEL))
 
 # Carregamento do Modelo
@@ -31,122 +40,10 @@ FEATURES_TREINAMENTO = [
     'TRAT_COV', 'HOSPITAL', 'UTI'
 ]
 
-# Estilos CSS atualizados com limites de tamanho, rolagem interna e fixação de colunas
-ESTILOS_CSS = """
-<style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f4f7f6; margin: 0; padding: 20px; color: #333; }
-    .box { background:white; padding:30px; margin:30px auto; max-width:600px; border-radius:10px; box-shadow: 0px 4px 15px rgba(0,0,0,0.05); text-align:center; }
-    input[type="file"] { margin: 20px 0; padding: 15px; background: #fafafa; border: 2px dashed #bbb; width: 80%; border-radius: 5px; }
-    
-    /* Botões */
-    .btn { padding:12px 25px; background:#28a745; color:white; border:none; border-radius:5px; font-size: 1em; cursor:pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-right: 10px; }
-    .btn:hover { background:#218838; }
-    .btn-voltar { background: #6c757d; }
-    .btn-voltar:hover { background: #5a6268; }
-    .btn-exportar { background: #007bff; }
-    .btn-exportar:hover { background: #0069d9; }
-    
-    .actions-container { margin-bottom: 20px; display: flex; align-items: center; }
-    .info { font-size: 0.9em; color: #666; text-align: left; margin: 15px 20px; padding: 10px; background: #e9ecef; border-left: 4px solid #007bff; }
-    
-    /* Limita o tamanho e adiciona barras internas de rolagem */
-    .table-container { 
-        background: white; 
-        padding: 15px; 
-        border-radius: 10px; 
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.05); 
-        margin-top: 10px; 
-        max-height: 600px;    
-        overflow-y: auto;     
-        overflow-x: auto;     
-    }
-    
-    table { width: 100%; border-collapse: collapse; font-size: 0.9em; text-align: left; }
-    
-    /* Fixa o cabeçalho no topo enquanto rola verticalmente */
-    th { 
-        background-color: #007bff; 
-        color: white; 
-        padding: 12px; 
-        font-weight: 600; 
-        position: sticky; 
-        top: 0; 
-        z-index: 10;
-    }
-    
-    td { padding: 10px; border-bottom: 1px solid #dee2e6; white-space: nowrap; }
-    tr:hover { background-color: #f1f3f5; }
-    
-    /* MODIFICAÇÃO CSS: Fixa a coluna ID_PACIENTE à esquerda */
-    td:first-child { font-weight: bold; color: #007bff; position: sticky; left: 0; background: #fdfdfd; box-shadow: 2px 0 5px rgba(0,0,0,0.05); }
-    th:first-child { position: sticky; left: 0; background: #0056b3; z-index: 12; }
-    
-    /* Fixa a coluna de classificação à direita */
-    td:last-child { font-weight: bold; position: sticky; right: 0; background: white; box-shadow: -2px 0 5px rgba(0,0,0,0.05); }
-    th:last-child { position: sticky; right: 0; background: #0056b3; z-index: 11; }
-    
-    .badge-alto { color: #dc3545; background: #f8d7da; padding: 4px 8px; border-radius: 4px; }
-    .badge-baixo { color: #28a745; background: #d4edda; padding: 4px 8px; border-radius: 4px; }
-</style>
-"""
 
-# HTML da Página Inicial
-HTML_HOME = f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Predição de Risco - COVID-19</title>
-    {ESTILOS_CSS}
-</head>
-<body>
-<div class="box">
-    <h2>Análise de Risco de Óbito - COVID-19</h2>
-    <p>Insira a tabela de pacientes (CSV ou Excel) para visualizar os resultados na tela.</p>
-    
-    <div class="info">
-        <strong>Requisito:</strong> O arquivo deve conter as 31 colunas necessárias para o modelo (de FEBRE até UTI).
-    </div>
-
-    <form action="/predict" method="POST" enctype="multipart/form-data">
-        <input type="file" name="arquivo" accept=".csv, .xlsx, .xls" required>
-        <br><br>
-        <button type="submit" class="btn">Visualizar Classificação</button>
-    </form>
-</div>
-</body>
-</html>
-"""
-
-# HTML da Página de Resultados
-HTML_RESULTADO = f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Resultados da Predição</title>
-    {ESTILOS_CSS}
-</head>
-<body>
-    <div style="max-width: 98%; margin: 0 auto;">
-        
-        <div class="actions-container">
-            <a href="/" class="btn btn-voltar">← Analisar outro arquivo</a>
-            <a href="/export" class="btn btn-exportar">📥 Exportar para Excel (.xlsx)</a>
-        </div>
-        
-        <h2>Resultados da Classificação em Lote</h2>
-        <p>As colunas ID_PACIENTE (esquerda) e CLASSIFICACAO_RISCO (direita) encontram-se fixadas na visualização.</p>
-        
-        <div class="table-container">
-            {{{{ tabela_html | safe }}}}
-        </div>
-    </div>
-</body>
-</html>
-"""
-
-@app.route('/')
+@app.route("/")
 def home():
-    return render_template_string(HTML_HOME)
+    return render_template("home.html")
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -191,21 +88,55 @@ def predict():
             "Alto Risco" if pred == 1 else "Baixo Risco" for pred in predicoes
         ]
 
-        # Salva o DataFrame final estruturado na memória do servidor
         ULTIMO_RESULTADO["df"] = df_resultado
 
-        # Cria a versão com formatação visual para exibição no HTML
-        df_visual = df_resultado.copy()
-        df_visual['CLASSIFICACAO_RISCO'] = [
-            '<span class="badge-alto">Alto Risco</span>' if pred == "Alto Risco" 
-            else '<span class="badge-baixo">Baixo Risco</span>' for pred in df_visual['CLASSIFICACAO_RISCO']
-        ]
+        metricas = gerar_metricas(df_resultado)
 
-        tabela_html = df_visual.to_html(index=False, escape=False)
-        return render_template_string(HTML_RESULTADO, tabela_html=tabela_html)
+        grafico = grafico_classificacao(df_resultado)
+
+        grafico_comorb = grafico_comorbidades(df_resultado)
+
+        grafico_sint = grafico_sintomas(df_resultado)
+
+        return render_template(
+            "dashboard.html",
+            metricas=metricas,
+            grafico=grafico,
+            grafico_comorb=grafico_comorb,
+            grafico_sint=grafico_sint
+        )
 
     except Exception as e:
         return f"Erro no processamento interno: {str(e)}", 500
+
+
+@app.route("/resultado")
+def resultado():
+
+    df = ULTIMO_RESULTADO["df"]
+
+    if df is None:
+        return redirect("/")
+
+    df_visual = df.copy()
+
+    df_visual["CLASSIFICACAO_RISCO"] = [
+        '<span class="badge-alto">Alto Risco</span>'
+        if x == "Alto Risco"
+        else '<span class="badge-baixo">Baixo Risco</span>'
+        for x in df_visual["CLASSIFICACAO_RISCO"]
+    ]
+
+    tabela_html = df_visual.to_html(
+        index=False,
+        escape=False,
+        classes="table"
+    )
+
+    return render_template(
+        "resultado.html",
+        tabela_html=tabela_html
+    )
 
 @app.route('/export')
 def export():

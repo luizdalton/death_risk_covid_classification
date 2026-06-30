@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Sistema Inteligente COVID-19</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="home-container">
+
+    <div class="home-card">
+
+        <div class="logo">
+
+            🦠
+
+        </div>
+
+        <h1>
+
+            Sistema Inteligente para Previsão de Óbito por COVID-19
+
+        </h1>
+
+        <p>
+
+            Utilize um arquivo CSV ou Excel para realizar a classificação automática
+            do risco de óbito utilizando um modelo de Machine Learning baseado em
+            <strong>Random Forest</strong>.
+
+        </p>
+
+        <form action="/predict"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <label class="upload-box">
+
+                📂 Escolher Arquivo
+
+                <input
+                    type="file"
+                    name="arquivo"
+                    accept=".csv,.xlsx,.xls"
+                    required>
+
+            </label>
+
+            <button class="btn-home">
+
+                🚀 Iniciar Análise
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

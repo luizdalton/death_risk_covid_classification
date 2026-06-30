@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Resultados da Classificação</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>📋 Resultados da Classificação</h1>
+
+        <p>
+            Abaixo estão todos os pacientes classificados pelo modelo
+            <strong>Random Forest</strong>.
+        </p>
+
+    </div>
+
+    <div class="top-actions">
+
+        <a href="/" class="btn-home2">
+
+            ⬅ Nova Análise
+
+        </a>
+
+        <a href="/export" class="btn-export">
+
+            📥 Exportar Excel
+
+        </a>
+
+    </div>
+
+    <div class="table-card">
+
+        {{ tabela_html|safe }}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

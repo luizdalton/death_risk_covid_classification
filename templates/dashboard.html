@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Dashboard COVID-19</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- CABEÇALHO -->
+
+    <div class="header">
+
+        <h1>🦠 Sistema Inteligente para Previsão de Óbito por COVID-19</h1>
+
+        <p><strong>Modelo:</strong> Random Forest</p>
+
+        <p>
+            Dashboard desenvolvido para análise das classificações de risco
+            utilizando Aprendizado de Máquina.
+        </p>
+
+    </div>
+
+
+    <!-- CARDS -->
+
+    <div class="cards">
+
+        <div class="card total">
+
+            <span class="icone">👥</span>
+
+            <h3>Total de Pacientes</h3>
+
+            <h1>{{ metricas.total }}</h1>
+
+        </div>
+
+        <div class="card idade">
+
+            <span class="icone">🎂</span>
+
+            <h3>Idade Média</h3>
+
+            <h1>{{ metricas.idade_media }}</h1>
+
+        </div>
+
+        <div class="card hospital">
+
+            <span class="icone">🏥</span>
+
+            <h3>Hospitalizados</h3>
+
+            <h1>{{ metricas.hospital }}</h1>
+
+        </div>
+
+        <div class="card uti">
+
+            <span class="icone">🚑</span>
+
+            <h3>UTI</h3>
+
+            <h1>{{ metricas.uti }}</h1>
+
+        </div>
+
+        <div class="card vacina">
+
+            <span class="icone">💉</span>
+
+            <h3>Vacinados</h3>
+
+            <h1>{{ metricas.vacinados }}</h1>
+
+        </div>
+
+    </div>
+
+
+        <!-- PRIMEIRA LINHA DE GRÁFICOS -->
+
+        <div class="graficos">
+
+        <div class="grafico-box">
+
+            <h2>📊 Distribuição das Classificações</h2>
+
+            {{ grafico|safe }}
+
+        </div>
+
+        <div class="grafico-box">
+
+            <h2>🩺 Top 5 Comorbidades</h2>
+
+            {{ grafico_comorb|safe }}
+
+        </div>
+
+    </div>
+
+    <div class="grafico-box grafico-grande">
+
+        <h2>🤒 Top 5 Sintomas</h2>
+
+        {{ grafico_sint|safe }}
+
+    </div>
+
+
+    <!-- BOTÕES -->
+
+    <div class="acoes">
+
+        <a href="/resultado" class="btn">
+
+            📋 Visualizar Tabela
+
+        </a>
+
+        &nbsp;&nbsp;
+
+        <a href="/export" class="btn">
+
+            📥 Exportar Excel
+
+        </a>
+
+    </div>
+
+
+    <!-- RODAPÉ -->
+
+    <div class="footer">
+
+        Sistema Inteligente para Previsão de Óbito por COVID-19
+
+        <br><br>
+
+        Universidade Federal do Pará- Castanhal
+
+        <br>
+
+        Engenharia da Computação
+
+        <br>
+
+        2026
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
